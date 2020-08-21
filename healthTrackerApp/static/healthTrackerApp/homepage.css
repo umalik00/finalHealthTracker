@@ -1,0 +1,102 @@
+@import url("https://fonts.googleapis.com/css?family=Cabin|Open+Sans|Rufina");
+
+.th {
+    font-family: 'Open Sans', sans-serif;
+    text-align: center;
+}
+body {
+    font-family: 'Open Sans', sans-serif;
+    text-align: center;
+    background-color: #fafafa;
+    color: #222222;
+}
+
+.dark-mode tbody {
+    background-color: #222222;
+    color: #fafafa;
+
+}
+.dark-mode {
+    background-color: #222222;
+    color: #fafafa;
+
+}
+
+.title {
+    font-family: 'Cabin', sans-serif;
+    text-align: left;
+}
+
+.th {
+    text-align:center;
+}
+
+.jumbotron {
+    font-family: 'Cabin', sans-serif;
+    font-size: 18px;
+    text-align: center;
+    background-color: purple;
+    color: white;
+}
+
+.fieldset {
+    display: none;
+}
+
+ul.breadcrumb {
+    padding: 10px 16px;
+    list-style: none;
+}
+
+ul.breadcrumb li {
+    display: inline;
+    font-size: 18px;
+}
+
+ul.breadcrumb li+li:before {
+    padding: 8px;
+    color: black;
+    content: "/\00a0";
+}
+
+ul.breadcrumb li a {
+    color: purple;
+    text-decoration: none;
+}
+
+.btn, .nav {
+    font-family: 'Cabin', sans-serif;
+    font-size: 18px;
+}
+
+h1{
+    font-family: 'Rufina', sans-serif;
+    font-size: 24px;
+}
+
+h2, h3, h4, h5, h6{
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+}
+
+p {
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Used for dropdown specific forms and show/hiding lists */
+#cardio, #weightlift, #bodyWeight, #howHeavyWereWeights, #heavinessOfWeight {
+    display: none
+}
+
+/* Large titles excluding jumbotrons */
+.\.ListTitle {
+    font-size: 20px;
+    font-weight: bold;
+    text-underline-style: single;
+}
+
+.smallText {
+    font-size: 12px;
+    font-weight: lighter;
+}
+

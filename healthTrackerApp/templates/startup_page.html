@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE-HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content = "IE-Edge">
+<meta name="viewport" content="width = device-width, inital-scale=1">
+<title>Health Tracker - Homepage</title>
+<!-- Bootstrap -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!-- Google fonts embedded in css-->
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'healthTrackerApp/startup_page.css' %}">
+    <script src="{% static 'healthTrackerApp/startup_page.js' %}"></script>
+{% endblock %}
+
+</head>
+<body onload="loadingFunction()">
+    <div class="container">
+        <div class="title d-block jumbotron">
+            <!-- Startup page uses a button and a loading screen before proceedng to the login screen -->
+            <h2 class="display-4">Health Tracker</h2>
+            <p>The closest thing to retrieving your daily health statistics on your desktop computer.</p>
+
+            <div id="loading"></div>
+
+            <div style="display:none;" id="hiddenDiv" class="animate">
+                <a href="{% url 'login' %}" type="button" class="btn btn-block btn-lg btn-success" aria-pressed="true">Login/Register</a>
+            </div>
+        </div>
+    </div>
+</body>

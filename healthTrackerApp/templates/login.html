@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE-HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content = "IE-Edge">
+<meta name="viewport" content="width = device-width, inital-scale=1">
+<title>Health Tracker - Homepage</title>
+<!-- Bootstrap -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!-- Google fonts embedded in css-->
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'healthTrackerApp/login.css' %}">
+    <script src="{% static 'healthTrackerApp/login.js' %}"></script>
+{% endblock %}
+
+</head>
+<body>
+
+<div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="navbar-header">
+            <a class="navbar-brand" style="font-size: 24px;" href="{% url 'login' %}">Health Tracker Web</a>
+        </div>
+        <div class="navbar-collapse">
+            <ul class="nav navbar-nav mr-auto d-mr-block justify-content-md-right">
+                <li class="nav-item active">
+                    <a class="nav-item nav-link" href="{% url 'login' %}">Account Login</a>
+                </li>
+                <li>
+                    <a class="nav-item nav-link" href="{% url 'register' %}">Register New Account</a>
+                </li>
+            </ul>
+        </div>
+        <button class="btn btn-secondary" onclick="darkMode()">Toggle Light/Dark Mode</button>
+    </nav>
+    <div class="container">
+        <div class="title d-block jumbotron jumbotron-fluid">
+            <h2 class="display-4">Health Tracker</h2>
+            <p class="lead">The closest thing to retrieving your daily health statistics.</p>
+        </div>
+        <div class="container-fluid">
+        <form method="post">
+            {% csrf_token %}
+        <!-- Login screen including the user name and password-->
+            <div class="row justify-content-center">
+                <div class="col-sm-6 align-items-center">
+                    <label for="login">Username</label>
+                    <input type="text" class="form-control" id="usernameInput" name="username" placeholder="Enter username to login">
+                </div>
+            </div>
+            <br>
+            <div class="row justify-content-center">
+                <div class="col-sm-6">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="passwordInput" name="password" placeholder="Enter password to login">
+                </div>
+            </div>
+            <br>
+            <div class="row justify-content-sm-center">
+                <button type="submit" class="btn btn-primary btn-lg justify-content-right">Login</button>
+            </div>
+            {% for field in login_form %}
+                {% for error in field.errors %}
+                    <p style="color: red;"> {{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+
+            {% if login_form.non_field_errors %}
+                <div style="color:red;">
+                    <p>{{ login_form.non_field_errors }}</p>
+                </div>
+            {% endif %}
+        </form>
+        </div>
+    </div>
+</div>

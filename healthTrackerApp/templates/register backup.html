@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE-HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content = "IE-Edge">
+<meta name="viewport" content="width = device-width, inital-scale=1">
+<title>Health Tracker - Homepage</title>
+<!-- Bootstrap -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!-- Google fonts embedded in css-->
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'healthTrackerApp/register.css' %}">
+{% endblock %}
+
+</head>
+<body>
+{% block content %}
+<div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="navbar-header">
+            <a class="navbar-brand" style="font-size: 24px;" href="{% url 'login' %}">Health Tracker Web</a>
+        </div>
+        <div class="navbar-collapse">
+            <ul class="nav navbar-nav mr-auto d-mr-block justify-content-md-right">
+                <li class="nav-item">
+                    <a class="nav-item nav-link" href="{% url 'login' %}">Account Login</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-item nav-link" href="{% url 'register' %}">Register New Account</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="title d-block jumbotron jumbotron-fluid">
+            <h2 class="display-4">Register New Account</h2>
+        </div>
+        <form method="post">
+            <div class="row container-fluid">
+                {% csrf_token %}
+                <div class="col col-lg-6">
+                    <div class="jumbotron">
+                        <h1 style="text-align: center">Personal Details</h1>
+                    </div>
+                    <label for="firstName">First Name:</label>
+                    <input type="text" class="form-control" name="firstName" placeholder="Enter first name" required>
+                    <br>
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" class="form-control" name="lastName" placeholder="Enter last name" required>
+                    <br>
+                    <label for="email">Email Address:</label>
+                    <input type="email" class="form-control" name="email" placeholder="Enter email address" required>
+                    <br>
+                    <label for="dob">Date of Birth:</label>
+                    <input type="date" class="form-control" name="dob" min="01/01/1900" required>
+                    <br>
+                    <div class="form-group">
+                        <label for="addressType">Address Type:</label>
+                        <select class="form-control" id="addressType">
+                            <option value="home">Home</option>
+                            <option value="student">Student</option>
+                            <option value="business">Business</option>
+                            <option value="work">Work</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <label for="address1">Address Line 1:</label>
+                    <input type="text" class="form-control" name="address1" placeholder="Enter address" required>
+                    <br>
+                    <label for="address2">Address Line 2:</label>
+                    <input type="text" class="form-control" name="address2" >
+                    <br>
+                    <label for="address3">Address Line 3:</label>
+                    <input type="text" class="form-control" name="address3" >
+                    <br>
+                    <label for="address4">Address Line 4:</label>
+                    <input type="text" class="form-control" name="address4">
+                    <br>
+                    <label for="city">City:</label>
+                    <input type="text" class="form-control" name="city" placeholder="Enter city"required>
+                    <br>
+                    <label for="county">County:</label>
+                    <input type="text" class="form-control" name="county" placeholder="Enter county" required>
+                    <br>
+                    <label for="postcode">Postcode:</label>
+                    <input type="text" class="form-control" name="postcode" pattern="([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|
+                    (([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Zaz]?))))\s?[0-9][A-Za-z]{2})" content="uppercase" max="8" placeholder="Enter postcode" required>
+                    <br>
+                </div>
+                <div class="col-lg-6">
+                    <div class="jumbotron">
+                        <h1 style="text-align: center">Personal Health Information</h1>
+                    </div>
+                    <label for="weight">Weight(kg):</label>
+                    <input type="number" class="form-control" name="weight" min="10" max="30000" placeholder="Enter current weight" required>
+                    <br>
+                    <label for="height">Height:</label>
+                    <input type="number" class="form-control" name="height" placeholder="Enter current height" min="0.1" step=".01" required>
+                    <br>
+                    <label for="dailyCalorie">Daily Calorie Intake:</label>
+                    <input type="number" class="form-control" name="dailyCalorie" min="100" placeholder="Enter daily calorie intake" required>
+                    <br>
+                    <label for="exerciseTarget">Set Exercise target(km):</label>
+                    <input type="number" class="form-control" name="weightTarget" min="0.1" step=".1" placeholder="Enter target weight (kg)" required>
+                    <br>
+                    <div class="form-group">
+                        <label for="sex">Sex</label>
+                        <select class="form-control" id="sex">
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
+                    <label for="username">Create a username:</label>
+                    <input type="text" class="form-control" name="username" placeholder="Enter a username of your choice" required>
+                    <br>
+                    <label for="password">Create a password:</label>
+                    <input type="password" class="form-control" name="password" placeholder="Enter a password of your choice" min="8" required>
+
+                </div>
+
+
+            </div>
+
+            {% for field in register_user%}
+                {% for error in field.errors %}
+                    <p style="color: red;"> {{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+
+            {% if register_user.non_field_errors %}
+                <div style="color:red;">
+                    <p>{{ register_user.non_field_errors }}</p>
+                </div>
+            {% endif %}
+
+        {% for field in address_type %}
+                {% for error in field.errors %}
+                    <p style="color: red;"> {{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+
+            {% if address_type.non_field_errors %}
+                <div style="color:red;">
+                    <p>{{ address_type.non_field_errors }}</p>
+                </div>
+            {% endif %}
+
+        {% for field in user_address %}
+                {% for error in field.errors %}
+                    <p style="color: red;"> {{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+
+            {% if user_address.non_field_errors %}
+                <div style="color:red;">
+                    <p>{{ user_address.non_field_errors }}</p>
+                </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Create new account</button>
+        </form>
+        {% endblock %}
+    </div>
+</div>

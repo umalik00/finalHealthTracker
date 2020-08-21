@@ -1,0 +1,44 @@
+@import url("https://fonts.googleapis.com/css?family=Cabin|Open+Sans|Rufina");
+
+body, .th {
+
+    font-family: 'Open Sans', sans-serif;
+}
+
+.title {
+    font-family: 'Cabin', sans-serif;
+    text-align: left;
+}
+
+.jumbotron {
+    font-family: 'Cabin', sans-serif;
+    font-size: 18px;
+    text-align: center;
+    background-color: purple;
+    color: white;
+}
+
+.btn, .nav {
+    font-family: 'Cabin', sans-serif;
+    font-size: 18px;
+}
+
+.dark-mode {
+    background-color: #222222;
+    color: #fafafa;
+
+}
+
+h1{
+    font-family: 'Cabin', sans-serif;
+    font-size: 24px;
+}
+
+h2, h3, h4, h5, h6{
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+}
+
+p {
+    font-family: 'Open Sans', sans-serif;
+}

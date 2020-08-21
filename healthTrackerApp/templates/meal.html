@@ -1,0 +1,192 @@
+{% load static %}
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content = "IE-Edge">
+<meta name="viewport" content="width = device-width, inital-scale=1">
+<title>Health Tracker - Homepage</title>
+<!-- Bootstrap -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!-- Google fonts embedded in css-->
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'healthTrackerApp/homepage.css' %}">
+    <script src="{% static 'healthTrackerApp/meal.js' %}"></script>
+{% endblock %}
+
+</head>
+<body>
+
+    <div class="container">
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="navbar-header">
+                <a class="navbar-brand" style="font-size: 24px" href="#">Health Tracker Web</a>
+            </div>
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav mr-auto d-mr-block justify-group-right">
+                    <li>
+                        <a class="nav-item nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li>
+                        <a class="nav-item nav-link" href="{% url 'exercise' %}">Active Exercise Detail</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-item nav-link" href="{% url 'meal' %}">Meal Calorie Detail</a>
+                    </li>
+                    <li>
+                        <a class="nav-item nav-link" href="{% url 'groups' %}">Groups</a>
+                    </li>
+                </ul>
+            </div>
+            <button class="btn btn-secondary" onclick="darkMode()">Toggle Light/Dark Mode</button>
+            {% if request.user.is_authenticated%}
+                <a class="btn btn-primary btn-lg justify-content-right" href="{% url 'logout' %}">Logout</a>
+                {% else %}
+                <a class="btn btn-primary btn-lg justify-content-right" href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </nav>
+        <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" aria-current="page"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Meal Calorie Detail</li>
+        </ol>
+
+        </nav>
+    </div>
+    <div class="container">
+        <div class="title d-block jumbotron jumbotron-fluid">
+            <h2 class="display-4">Meal Calorie Detail</h2>
+        </div>
+        <div class="row">
+            <div class="container">
+                <a href="{% url 'mealItem' %}"  class="btn btn-primary btn-lg btn-block">Add/Edit Food Drink Items List</a>
+            </div>
+
+        </div>
+        <hr/>
+        <div class="row">
+            <!-- Meal Table showing all meal records from the user in the database-->
+            <div class="col col-lg-7">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class = "thead-dark">
+                        <tr>
+                            <th style="width: 15%">Meal Type</th>
+                            <th style="width: 15%">Meal name</th>
+                            <th style="width: 15%">Carbohydrates (g)</th>
+                            <th style="width: 15%">Protein (g)</th>
+                            <th style="width: 15%">Fats (g)</th>
+                            <th style="width: 15%">Calories (cal)</th>
+                            <th style="width: 15%">Time Recorded</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in mealTable %}
+                        <tr>
+                            <td>{{ item.typeOfMeal }}</td>
+                            <td>{{ item.food.foodName }} </td>
+                            <td>{{item.food.carbohydrates}}</td>
+                            <td>{{ item.food.protein }}</td>
+                            <td>{{ item.food.fats }}</td>
+                            <td>{{ item.food.calories }}</td>
+                            <td>{{ item.timeRecorded }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            </div>
+            <!-- Meal entry form when the user wants to submit a new meal entry -->
+            <div class="col col-lg-5 justify-content-center">
+                <h2 class=".ListTitle">New Meal Entry Form</h2>
+                <form action="{% url 'meal' %}" method="post" id="mealFrm">
+                {% csrf_token %}
+                    <hr/>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label for="foodName">Name of Foods/Drinks: </label>
+                        </div>
+                        <!-- Dropdown list only works if the user has added a food/drink item in the food/Drink item template-->
+                        <div class="col-lg-6">
+                            <select class="form-control" name="food">
+                                {% for item in mealForm.food.field.queryset%}
+                                    <option value="{{ item.foodID}}">{{ item.foodName}}</option>
+                                {% endfor %}
+                            </select>
+
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label for="typeOfMeal">Type of Meal:</label>
+                        </div>
+                        <div class="col-lg-6">
+                            <select class="form-control" name="typeOfMeal">
+                                <option value="Breakfast" class="default">Breakfast</option>
+                                <option value="Lunch" >Lunch</option>
+                                <option value="Dinner" >Dinner</option>
+                                <option value="Brunch" >Brunch</option>
+                                <option value="Snack" >Snack</option>
+                                <option value="Supper" >Supper</option>
+                            </select>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label for="Time Recorded">date and time Recorded: </label>
+                        </div>
+                        <div class="col-lg-6">
+                            <input type="datetime-local" class="form-control" name="timeRecorded" value ="{{ mealForm.timeRecorded.value }}">
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label for="portion">Portion Size(s): </label>
+                        </div>
+                        <div class="col-lg-6">
+                            <input type="number" class="form-control" name="portionSize" min="1" step="1" value="1" max="20">
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="smallText">
+                        <ul class="list-unstyled">
+                            <li>Note: If you see no food/drink items in the dropdown section, click on the Add/Edit Food Drink Items
+                            button to check whether you've any food/drink items added</li>
+                        </ul>
+                    </div>
+
+                {% for field in mealForm %}
+                <p>
+                        {% if field.help_text %}
+                            <p style="color: red;"> {{ field.help_text }}</p>
+                        {% endif %}
+
+                        {% for error in field.errors %}
+                          <p style="color: red;"> {{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </p>
+
+                    {% if mealForm.non_field_errors %}
+                        <div style="color:red;">
+                            <p>{{ mealForm.non_field_errors }}</p>
+                        </div>
+                    {% endif %}
+
+                    <div class="row">
+                    <div class="container">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">Submit new meal entry</button>
+                    </div>
+                    </div>
+                </form>
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+</body>

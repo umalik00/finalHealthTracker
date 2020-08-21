@@ -1,0 +1,246 @@
+{% load static %}
+<!DOCTYPE-HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content = "IE-Edge">
+<meta name="viewport" content="width = device-width, inital-scale=1">
+<title>Health Tracker - Homepage</title>
+<!-- Bootstrap -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!-- Google fonts embedded in css-->
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'healthTrackerApp/homepage.css' %}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+{% endblock %}
+
+</head>
+<body>
+
+<div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="navbar-header">
+            <a class="navbar-brand" style="font-size: 24px" href="#">Health Tracker Web</a>
+        </div>
+        <div class="navbar-collapse">
+            <ul class="nav navbar-nav mr-auto d-mr-block justify-group-right">
+                <li class="nav-item active">
+                    <a class="nav-item nav-link" href="{% url 'home' %}">Home</a>
+                </li>
+                <li>
+                    <a class="nav-item nav-link" href="{% url 'exercise' %}">Active Exercise Detail</a>
+                </li>
+                <li>
+                    <a class="nav-item nav-link" href="{% url 'meal' %}">Meal Calorie Detail</a>
+                </li>
+                <li>
+                    <a class="nav-item nav-link" href="{% url 'groups' %}">Groups</a>
+                </li>
+            </ul>
+        </div>
+        <button class="btn btn-secondary" onclick="darkMode()">Toggle Light/Dark Mode</button>
+        {% if request.user.is_authenticated%}
+            <a class="btn btn-primary btn-lg justify-content-right" href="{% url 'logout' %}">Logout</a>
+            {% else %}
+            <a class="btn btn-primary btn-lg justify-content-right" href="{% url 'login' %}">Login</a>
+        {% endif %}
+    </nav>
+    <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page" href="#">Home</li>
+    </ol>
+    </nav>
+    <!-- Introduction to account -->
+    <div class="container">
+        <div class="title d-block jumbotron jumbotron-fluid">
+            <h2 class="display-4">{{user.username}} </h2>
+            <p class="lead">Welcome to your account, these are your latest today's statistics.</p>
+        </div>
+        <div class="jumbotron">
+            <p>Your Goals / Objectives</p>
+        </div>
+        <!-- Goals table showing all goal records corresponding to user-->
+        <div class="row justify-content-md-left">
+            <div class="col col-lg-8">
+            <div class ="table-responsive">
+            <table class="table">
+                <thead class = "thead-dark">
+                    <tr>
+                        <th style="width: 25%">Goal name</th>
+                        <th style="width: 25%">Date Created</th>
+                        <th style="width: 25%">Target Date</th>
+                        <th style="width: 25%">Goal Type</th>
+                        <th style="width: 25%">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in goals %}
+                    <tr>
+
+                        <td>{{ item.goal.goalName}}</td>
+                        <td>{{ item.goal.dateCreated }}</td>
+                        <td>{{ item.goal.targetDate }}</td>
+                        <td>{{ item.goal.goalType }}</td>
+                        <td>{{ item.goal.goalDescription }}</td>
+                    {% endfor %}
+                    </tr>
+
+                </tbody>
+            </table>
+            </div>
+            </div>
+        <!-- New goal form adding to database -->
+            <div class="col col-lg-4">
+                <h1 class=".ListTitle">Add New Goal</h1>
+                <hr/>
+                <form action="{% url 'goals' %}" method="post" id="goalCompletionForm">
+                {% csrf_token %}
+                 <div class="row">
+                    <div class="form-group col-lg-6">
+                        <label for="goalFormNumber">Name of goal</label>
+                    </div>
+                    <div class="col-lg-6">
+                        <input type="text" class="form-control" name="goalName" required>
+                    </div>
+                 </div>
+                <hr/>
+                <div class="row">
+                    <div class="form-group col-lg-6">
+                        <label for="goalFormControlSelect">Goal Type</label>
+                    </div>
+
+                    <select class="form-control col-lg-6" name="goalType">
+                        <option>Weight Target</option>
+                        <option>Exercise Target</option>
+                    </select>
+                </div>
+                <hr/>
+                <div class="row">
+                    <div class="form-group col-lg-6">
+                        <label for="goalDescription">Description</label>
+                    </div>
+                    <div class="col-lg-6">
+                        <textarea class="form-control" name="goalDescription" rows="3" required></textarea>
+                    </div>
+                </div>
+                <hr/>
+                <div class="form-group row">
+                    <div class="col-lg-6">
+                        <label for="goalFormDate">Date target:</label>
+                    </div>
+                    <div class="col-lg-6">
+                        <input type="date" class="form-control" name="targetDate" min="01/01/1920" value="01/01/2000" required>
+                    </div>
+                </div>
+                <hr/>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label for="achievedTarget">Did you achieved the target?: </label>
+                    </div>
+                    <div class="col-lg-3">
+                        <input type="radio" class="form-control" name="isAchieved" value="True">Yes</input>
+                    </div>
+                    <div class="col-lg-3 default">
+                        <input type="radio" class="form-control default" name="isAchieved" value="False">No</input>
+                    </div>
+                </div>
+                {% for list in userGoals %}
+                <p>
+                    {% if list.help_text %}
+                        <p style="color: red;"> {{ list.help_text }}</p>
+                    {% endif %}
+
+                    {% for error in list.errors %}
+                      <p style="color: red;"> {{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+                </p>
+
+                {% if userGoals.non_field_errors %}
+                <div style="color:red;">
+                    <p>{{ userGoals.non_field_errors }}</p>
+                </div>
+                {% endif %}
+
+            {% for list in goalCompletionFrm %}
+                <p>
+                    {% if list.help_text %}
+                        <p style="color: red;"> {{ list.help_text }}</p>
+                    {% endif %}
+
+                    {% for error in list.errors %}
+                      <p style="color: red;"> {{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+                </p>
+
+            {% if goalCompletionFrm.non_field_errors %}
+                <div style="color:red;">
+                    <p>{{ goalCompletionFrm.non_field_errors }}</p>
+                </div>
+            {% endif %}
+                <!-- Should trigger an alert at the top-->
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Add new goal to list</button>
+            </form>
+            </div>
+        </div>
+        <div class="jumbotron">
+            <p>Personalising your profile</p>
+            <p id="bmr"></p>
+            <p id="calorieDeficit"></p>
+        </div>
+        <!-- Exercise intensive scale and weight loss/gain questions to -->
+        <div class="row">
+            <div class="col col-lg-6">
+                <h2 class=".ListTitle">Please answer these 2 questions, so we may be able to customise your </h2>
+                    <div class="form-group">
+                        <label for="exerciseFormControlSelect">Exercise Intensive Scale:</label>
+                        <select class="form-control" id="exerciseFormControlSelect" onchange="bmrCalculation({{ BMR }})">
+                            <option selected="selected" value="Sedentry">Sedentry</option>
+                            <option value="Moderately active">Moderately active</option>
+                            <option value="Highly active">Highly active</option>
+                        </select>
+                    </div>
+                    <hr/>
+                    <div class="form-group">
+                        <label for="weightFormControlSelect">Weight Gain/Loss scale:</label>
+                        <select class="form-control" id="weightFormControlSelect" onchange="weightToLose()">
+                            <option value="0pw" selected="selected">Maintain Weight (No Gain/Loss)</option>
+                            <option value="-2pw">Lose 2lb per week</option>
+                            <option value="-1pw">Lose 1lb per week</option>
+                            <option value="+1pw">Gain 1lb per week</option>
+                            <option value="+2pw">Gain 2lb per week</option>
+                        </select>
+                    </div>
+            </div>
+            <!-- Showing the user's profile statistics in terms of weight and target weight-->
+            <div class="col-lg-6">
+                    <h2 class=".ListTitle">Weight: {{ user.weight }} kg</h2>
+                    <h2 class=".ListTitle">Target Weight: {{ user.targetWeight }} kg</h2>
+                    <h2 class=".ListTitle">Height: {{ user.height }} m</h2>
+                    <h2 class=".ListTitle">BMI: {{ BMI }} %</h2>
+                    <h2 class=".ListTitle">Daily Calories Intake: {{ user.calorieIntake }} cal</h2>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="{% static 'homepage.js' %}">
+</script>
+
+
+
+
+
+
+
+
+
+
+</body>
+
+
+
+
+

@@ -1,0 +1,162 @@
+{% extends 'blank_template.html' %}
+{% block content %}
+
+<div class="container">
+    <div class="title d-block jumbotron jumbotron-fluid">
+            <h2 class="display-4">{{ groupAttr.getGroupName }}</h2>
+            <p>Description: {{ groupAttr.groupDescription }}</p>
+    </div>
+    <!-- Table showing the list of users joined in the group -->
+    <div class="row">
+        <div class="col col-lg-4">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class = "thead-dark">
+                        <tr>
+                            <th style="width: 25%">First Name</th>
+                            <th style="width: 25%">Last Name</th>
+                            <th style="width: 25%">Is User Admin?</th>
+                            <th style="width: 25%">Active user</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in group %}
+                            <tr>
+                                <td>{{ item.user.getForename }}</td>
+                                <td>{{ item.user.getSurname }}</td>
+                                <td>{{ item.isAdmin }}</td>
+                                <td>{{ item.active }}</td>
+
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Group goal table showing all of the users-->
+        <div class="col col-lg-4">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class = "thead-dark">
+                        <tr>
+                            <th style="width: 25%">Group Goal name</th>
+                            <th style="width: 25%">Date Created</th>
+                            <th style="width: 25%">Group Goal Target Date</th>
+                            <th style="width: 25%">Group Goal Type</th>
+                            <th style="width: 25%">Group Goal Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in groupGoalName %}
+                        <tr>
+                            <td>{{ item.goal.goalName }}</td>
+                            <td>{{ item.goal.dateCreated }}</td>
+                            <td>{{ item.goal.targetDate }}</td>
+                            <td>{{ item.goal.goalType }}</td>
+                            <td>{{ item.goal.goalDescription }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    <div class="col col-lg-4">
+                <h1 class=".ListTitle">Add New Goal</h1>
+                <hr/>
+                <form method="post" id="goalCompletionForm">
+                {% csrf_token %}
+                 <div class="row">
+                    <div class="form-group col-lg-6">
+                        <label for="goalFormNumber">Name of goal</label>
+                    </div>
+                    <div class="col-lg-6">
+                        <input type="text" class="form-control" name="goalName" required>
+                    </div>
+                 </div>
+                <hr/>
+                <div class="row">
+                    <div class="form-group col-lg-6">
+                        <label for="goalFormControlSelect">Goal Type</label>
+                    </div>
+
+                    <select class="form-control col-lg-6" name="goalType">
+                        <option>Weight Target</option>
+                        <option>Exercise Target</option>
+                    </select>
+                </div>
+                <hr/>
+                <div class="row">
+                    <div class="form-group col-lg-6">
+                        <label for="goalDescription">Description</label>
+                    </div>
+                    <div class="col-lg-6">
+                        <textarea class="form-control" name="goalDescription" rows="3" required></textarea>
+                    </div>
+                </div>
+                <hr/>
+                <div class="form-group row">
+                    <div class="col-lg-6">
+                        <label for="goalFormDate">Date target:</label>
+                    </div>
+                    <div class="col-lg-6">
+                        <input type="date" class="form-control" name="targetDate" min="01/01/1920" value="01/01/2000" required>
+                    </div>
+                </div>
+                <hr/>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label for="achievedTarget">Did you achieved the target?: </label>
+                    </div>
+                    <div class="col-lg-3">
+                        <input type="radio" class="form-control" name="isAchieved" value="True">Yes</input>
+                    </div>
+                    <div class="col-lg-3 default">
+                        <input type="radio" class="form-control default" name="isAchieved" value="False">No</input>
+                    </div>
+                </div>
+                {% for list in goals %}
+                <p>
+                    {% if list.help_text %}
+                        <p style="color: red;"> {{ list.help_text }}</p>
+                    {% endif %}
+
+                    {% for error in list.errors %}
+                      <p style="color: red;"> {{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+                </p>
+
+                {% if goals.non_field_errors %}
+                <div style="color:red;">
+                    <p>{{ goals.non_field_errors }}</p>
+                </div>
+                {% endif %}
+
+            {% for list in goalCompletionFrm %}
+                <p>
+                    {% if list.help_text %}
+                        <p style="color: red;"> {{ list.help_text }}</p>
+                    {% endif %}
+
+                    {% for error in list.errors %}
+                      <p style="color: red;"> {{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+                </p>
+
+            {% if goalCompletionFrm.non_field_errors %}
+                <div style="color:red;">
+                    <p>{{ goalCompletionFrm.non_field_errors }}</p>
+                </div>
+            {% endif %}
+                <!-- Should trigger an alert at the top-->
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Add new goal to list</button>
+            </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

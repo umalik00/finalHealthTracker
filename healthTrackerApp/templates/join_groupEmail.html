@@ -1,0 +1,11 @@
+{% extends "blank_template.html" %}
+{% block content %}
+
+<h2>Congratulations, You have been invited to a group specifically by a member</h2>
+<p>To enter the group please click this link</p>
+{% for item in group %}
+    <a href="{% url "joinedGroup" item.group.groupID %}">Join Group using link</a>
+{% endfor %}
+
+{% endblock %}
+

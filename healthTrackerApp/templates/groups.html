@@ -1,0 +1,185 @@
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-Edge">
+    <meta name="viewport" content="width = device-width, inital-scale=1">
+    <title>Health Tracker - Homepage</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- Google fonts embedded in css-->
+    {% block extrahead %}
+        <link rel="stylesheet" type="text/css" href="{% static 'healthTrackerApp/homepage.css' %}">
+        <script src="{% static 'healthTrackerApp/groups.js' %}"></script>
+    {% endblock %}
+
+</head>
+<body>
+
+    <div class="container">
+    <!-- nav bar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="navbar-header">
+                <a class="navbar-brand" style="font-size: 24px" href="#">Health Tracker Web</a>
+            </div>
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav mr-auto d-mr-block justify-group-right">
+                    <li>
+                        <a class="nav-item nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li>
+                        <a class="nav-item nav-link" href="{% url 'exercise' %}">Active Exercise Detail</a>
+                    </li>
+                    <li>
+                        <a class="nav-item nav-link" href="{% url 'meal' %}">Meal Calorie Detail</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-item nav-link" href="{% url 'groups' %}">Groups</a>
+                    </li>
+                </ul>
+            </div>
+            <button class="btn btn-secondary" onclick="darkMode()">Toggle Light/Dark Mode</button>
+            {% if request.user.is_authenticated %}
+                <a class="btn btn-primary btn-lg justify-content-right" href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a class="btn btn-primary btn-lg justify-content-right" href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </nav>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Groups</li>
+            </ol>
+
+        </nav>
+    </div>
+    <div class="container">
+        <div class="title d-block jumbotron jumbotron-fluid">
+            <h2 class="display-4">Groups</h2>
+        </div>
+        <!-- user uses an existing text box to show which group they want to join -->
+        <div class="row">
+            <div class="col col-lg-4">
+                <h2 class=".ListTitle">Join an existing group</h2>
+                <hr/>
+                <form action="{% url 'join' %}" method="post" id="groupJoinForm">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label for="nameOfGroup">Enter new group name:</label>
+                        </div>
+                        <div class="col-lg-8">
+                            <input type="text" id="groupName" class="form-control" name="groupName" placeholder="Enter an existing group name" required>
+                        </div>
+                    </div>
+                    {% for field in JoinGroupFrm %}
+                <p>
+                        {% if field.help_text %}
+                            <p style="color: red;"> {{ field.help_text }}</p>
+                        {% endif %}
+
+                        {% for error in field.errors %}
+                          <p style="color: red;"> {{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </p>
+
+                    {% if joinGroupFrm.non_field_errors %}
+                        <div style="color:red;">
+                            <p>{{ joinGroupFrm.non_field_errors }}</p>
+                        </div>
+                    {% endif %}
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Join</button>
+                </form>
+            </div>
+            <!-- Joined Groups, user clicks on hyperlink -->
+            <div class="col col-lg-4">
+                <h2 class=".ListTitle">Joined Groups</h2>
+                <hr/>
+                <div class="list-group">
+                    {% for item in groups %}
+                        <a href="{% url 'joinedGroup' item.group.groupID %}" class="list-group-item flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h4>{{item.group.groupName}}</h4>
+                                <small>Created: {{ item.dateCreated.date }}</small>
+                            </div>
+                            <p class="mb-1">Description: {{ item.group.groupDescription }}</p>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col col-lg-4">
+            <!-- New group creation form, user can create their own group in here-->
+                <form action="{% url 'createGroups' %}" method="post" id="groupCreationForm">
+                    {% csrf_token %}
+                    <h2 class=".ListTitle">New Group Creation Form</h2>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <label for="groupName">Enter new group name:</label>
+                        </div>
+                        <div class="col-lg-7">
+                            <input type="text" id="groupName" class="form-control" name="groupName" placeholder="Enter new group name" required>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <label for="groupDescription">Enter description:</label>
+                        </div>
+                        <div class="col-lg-7">
+                            <textarea class="form-control" id="description" name="groupDescription" rows="3" placeholder="Enter description" required></textarea>
+                        </div>
+                    </div>
+                    <hr/>
+
+                    {% for field in groupCreationFrm%}
+                <p>
+                        {% if field.help_text %}
+                            <p style="color: red;"> {{ field.help_text }}</p>
+                        {% endif %}
+
+                        {% for error in field.errors %}
+                          <p style="color: red;"> {{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </p>
+
+                    {% if groupCreationFrm.non_field_errors %}
+                        <div style="color:red;">
+                            <p>{{ groupCreationFrm.non_field_errors }}</p>
+                        </div>
+                    {% endif %}
+
+                 {% for field in owner%}
+                <p>
+                        {% if field.help_text %}
+                            <p style="color: red;"> {{ field.help_text }}</p>
+                        {% endif %}
+
+                        {% for error in field.errors %}
+                          <p style="color: red;"> {{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </p>
+
+                    {% if owner.non_field_errors %}
+                        <div style="color:red;">
+                            <p>{{ owner.non_field_errors }}</p>
+                        </div>
+                    {% endif %}
+
+                    <div class="row">
+                        <div class="container">
+                            <button type="submit" id="submit" class="btn btn-primary btn-lg btn-block">Create new group</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
